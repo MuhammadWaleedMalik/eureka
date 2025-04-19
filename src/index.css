@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+  --accent-color: 178, 99, 26;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+@layer components {
+  .nav-link {
+    @apply px-4 py-2 text-gray-300 hover:text-white transition-colors;
+  }
+  
+  .nav-link.active {
+    @apply text-white font-medium;
+  }
+  
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-[#B2631A] text-white hover:bg-[#c97a2d];
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-800 text-white hover:bg-gray-700 border border-gray-700;
+  }
+  
+  .card {
+    @apply bg-gray-800 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg;
+  }
+  
+  .feature-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+  }
+}
+
+
+
+

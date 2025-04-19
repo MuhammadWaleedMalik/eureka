@@ -1,0 +1,709 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Montseerat ExtraLight;
+    color: #D4A017;
+}
+
+html , body {
+    width: 100%;
+    height: 100%;
+}
+
+
+*::selection {
+    background-color: rgb(215, 31, 31);
+    color: "#D4A017";
+}
+
+body::-webkit-scrollbar {
+            display: block ; 
+            width: 8px;
+            background-color:#D4A017;
+
+}
+
+body::-webkit-scrollbar-thumb {
+                background-color:  white;
+                border-radius: 50px;
+ }
+
+
+
+
+
+ 
+
+
+
+
+#main {
+    position: relative;
+    background-color:black;
+}
+
+#page1{
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    display:  flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index:   10;
+
+}
+
+#page1 h1 {
+    text-transform: uppercase;;
+    font-size:  6vw;
+    font-weight: 900;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+#page1 h1::before {
+    content: "Flash, Dash, Make It Mash";
+    position: absolute;
+    color: black;
+    top: -2px;
+    left: -6px;
+    -webkit-text-stroke: 2px #95c11e;
+    z-index: -1;
+}
+
+
+#page1 h2 {
+    text-transform: uppercase;;
+    margin-bottom: 10px;
+    font-size:  3vw;
+    z-index:   10;
+    color: white;
+    font-weight: 500;
+}
+
+#page1 p {
+    font-size: 1.4vw;
+    width: 50%;
+    text-align: center;
+
+}
+
+
+#page1 #arrow {
+    height: 200px;
+    width: 200px;
+    background-color: transparent;
+    border: 2px solid #95c11e;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    left: -2%;
+    bottom: 0%;
+    transition: all ease 0.5s;
+} 
+
+#page1 #arrow i { 
+    font-size: 50px;
+    font-weight: 200;   
+}
+
+#page1 #arrow:hover {
+    scale: 0.5;
+    background-color: #95c11e;
+} 
+
+
+#page2{
+    width: 100%;
+   min-height: 100vh;
+    /* position: relative; */
+    
+}
+
+
+
+
+
+
+
+
+
+
+#about_us {
+    margin-top: 100px;
+    display:  flex;
+    height:  40vh;
+    /* background-color: red; */
+    align-items: center;
+    padding: 0 50px;
+    justify-content:  space-around;
+    position: relative;
+}
+
+#about_us img {
+    height: 220px;
+    width: 220px;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+#about_us_p { 
+    width: 50%;
+    text-align: center;
+}
+
+#about_us_p h3 { 
+    font-size: 3vw ;
+    font-weight: 700;
+    margin-bottom: 50px;
+}
+
+#about_us_p p{
+    font-size:  18px;
+    line-height: 36px;
+    font-weight: 100;
+} 
+
+
+/* General Styling */
+#cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    position: relative;
+    width: calc(50% - 20px); /* Two cards per row */
+    height: 250px;
+    background-color: rgb(115, 115, 5) !important;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 0.6s ease-in-out forwards;
+}
+
+/* Overlay Animation */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    padding: 20px;
+}
+
+.card:hover .overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Animation for Cards Appearance */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card {
+        width: 100%; /* Full width for smaller screens */
+    }
+}
+
+
+
+
+.overlay{
+    position: relative;
+    height: 100% ;
+    width: 100%;
+    background-color: #95c11e;
+    padding:  10px;
+    padding-top: 100px;
+    opacity: 0;
+    transition: all ease 0.6s;
+}
+.overlay h4 {
+    color: black;
+    font-size: 18px;
+    position: relative;
+    
+    white-space: normal; /* Allow text to wrap */
+    word-wrap: break-word; /* Ensure long words wrap */
+    overflow-wrap: break-word; /* Alternative for word-wrap */
+    
+    width: 100%; /* Ensure it fits inside the parent */
+    max-width: 100%; /* Prevent overflow */
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    font-weight: 700;
+    text-align: center; /* Ensure proper alignment */
+}
+
+
+.overlay p {
+    color: black;
+    font-size: 18px;
+}
+
+.card:hover .overlay {
+    opacity: 1;
+} 
+
+
+.card:hover {
+    transform:  rotate3d(-1,1,0,20deg);
+} 
+
+
+#green-div {
+    height: 30vh;
+    display:  flex;
+    align-items: center;
+    justify-content: space-between;
+    background : linear-gradient(to left bottom, #2DA634  ,#A6D721);    
+}
+
+#green-div img { 
+
+    width: 14%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+#green-div h4 { 
+    width: 40%;
+    color:  black;
+    font-weight: 800;
+    text-align: center;
+    line-height: 50px;
+    font-size: 29px;
+    text-transform: uppercase;
+}
+
+
+
+
+
+
+
+#page3 {
+    width: 100%;
+    height: 100vh;
+    background-color: black;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+}
+ 
+#page3 #box1 {
+    width: 100%;
+    display: flex;
+    height: 70%;
+}
+
+#page3 #box1 #box_left { 
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    padding: 30px 100px;
+}
+ 
+#page3 #box1 #box_left img {  
+    height: 540px;
+    border-radius: 22px;
+    
+    width: 500px;   
+    object-fit: contain;
+}
+
+
+#page3 #box1 #box_right { 
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    padding: 30px 100px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#page3 #box1 #box_right h3 { 
+
+            font-size: 50px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+} 
+
+#page3 #box1 #box_right p  { 
+    font-size: 18px;
+    font-weight: 100;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-transform: uppercase;
+    margin-bottom: 27px;
+
+} 
+#page3 #box1 #box_right #bt1 { 
+    position: relative;
+    z-index: 10;
+    transition: all ease 0.5s;
+    font-size: 18px;
+    font-weight: 100;
+    color: white;
+    padding: 10px 40px;
+    background-color: #000;
+    border: 1px solid #D4A017;
+    border-radius: 17px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-transform: uppercase;
+    margin-bottom: 27px;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none; /* Remove default link underline */
+}
+
+#page3 #box1 #box_right #bt1:hover { 
+    color: white;
+    background-color: #D4A017;
+    border: 1px solid #060606;
+}
+
+
+
+
+#page3 #box2 {
+    width: 100%;
+    margin-top: 300px;
+    height: 50%;
+    position: relative;
+}
+
+#page3 #box2 p {
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    left: 23%;
+    top: 23%;
+
+    font-size: 30px;
+    font-weight: 700;
+    width: 60%;
+    line-height: 50px;
+    text-align: center;
+}
+
+#page3 #box2 img  { 
+    position: absolute;
+    height: 60px;
+}
+
+#page3 #box2 #colon1 { 
+    top: 25%;
+    left: 15%;
+}
+
+#page3 #box2 #colon2 { 
+    bottom: 30%;
+    right: 15%;
+}
+
+
+
+
+
+
+
+#page4 {
+    height: 40vh;
+    width: 100%;
+    position: relative;
+    display:  flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+#page4 h1 { 
+    font-size: 39px;
+    text-transform: uppercase;
+    color: black;
+    -webkit-text-stroke: 2px #fff;
+    font-weight: 900 ; 
+    position: absolute;
+}
+
+
+
+
+
+
+@media (max-width :550px) 
+{
+    #page1{
+        width: 100%;
+        height: 100vh;
+        
+        display:  flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        z-index:   10;
+    
+    }
+    
+    #page1 h1 {
+        text-transform: uppercase;;
+        font-size:  6vw;
+        
+    }
+    
+    #page1 h1::before {
+        content: "Flash, Dash, Make It Mash";
+        position: absolute;
+        color: black;
+        top: -2px;
+        left: -6px;
+        -webkit-text-stroke: 2px #95c11e;
+        z-index: -1;
+    }
+    
+    
+    #page1 h2 {
+        font-size:  7vw;
+    }
+    
+    #page1 p {
+        font-size: 2.5vw;
+    
+    }
+    
+    
+    #page1 #arrow {
+        height: 140px;
+        width: 140px;
+    } 
+    
+    
+    
+    #page2{
+        width: 100%;
+       min-height: 100vh;
+        
+    }
+    
+    
+    #scroller {
+            margin-top: 25px;
+    }
+
+
+
+    #about_us {
+        margin-top: 450px;
+        height:  20vh;
+        justify-content: center;
+        display:  flex;
+        flex-direction: column;
+        position: relative;
+    }
+    
+    #about_us img {
+        height: 220px;
+        width: 220px;
+        border-radius: 20px;
+        object-fit: cover;
+    }
+    
+    #about_us_p { 
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    #about_us_p h3 { 
+        font-size: 4vw ;
+    }
+    
+    #about_us_p p{
+        font-size:  14px;
+    } 
+    
+    
+    
+    #cards-container {
+        display: none;
+    }
+    
+    .card{
+        display:  none;
+    }
+    
+    
+    
+    .overlay{
+        position: relative;
+            display:  flex;
+            flex-direction: column;
+            width: 100%;
+            margin-top: 400px;
+    }
+
+    #green-div {
+        height: 30vh;
+        margin-top: 400px;
+        display:  flex;
+        align-items: center;
+        justify-content: space-between;
+        background : linear-gradient(to left bottom, #2DA634  ,#A6D721);    
+    }
+    
+    #green-div img { 
+    
+        width: 14%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    
+    #green-div h4 { 
+        width: 100%;
+        font-size: 18px;
+    }
+    
+    
+    
+    
+    
+    
+    
+     
+    #page3 #box1 {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+    }
+    
+    #page3 #box1 #box_left { 
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        padding: 30px 100px;
+    }
+     
+    #page3 #box1 #box_left img {  
+        height: 540px;
+        border-radius: 22px;
+        
+        width: 800px;   
+        object-fit: contain;
+    }
+    
+    
+    #page3 #box1 #box_right { 
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    #page3 #box1 #box_right h3 { 
+    
+                font-size: 28px;
+                text-transform: uppercase;
+                margin-bottom: 20px;
+    } 
+    
+    #page3 #box1 #box_right p  { 
+        font-size: 10px;
+        margin-bottom: 1px;
+    } 
+
+    
+    
+    
+    
+    #page3 #box2 {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+        height: 50%;
+        position: relative;
+    }
+    
+    #page3 #box2 p {
+        display: none;
+    }
+    
+    #page3 #box2 img  { 
+        display: none;
+    }
+    
+    #page3 #box2 #colon1 { 
+            display: none;
+    }
+    
+    #page3 #box2 #colon2 { 
+            display: none;
+        }
+    
+    
+    
+    
+    
+    
+    
+    #page4 {
+        margin-top: 50px;
+    }
+    
+    
+    #page4 h1 { 
+        font-size: 4    5px;
+        justify-content: center;
+        margin:  30px;
+        width: 50%;
+        text-align: center;
+        }
+    
+    
+    
+    
+}
