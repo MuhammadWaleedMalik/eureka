@@ -69,7 +69,7 @@ const Login = () => {
       setLoading(true);
       
       // Admin login check (from page 2)
-      if (email === "admin@newtonai.net" && password === "@Abc123456") {
+      if (email === "admin@eureka" && password === "@Abc123456") {
         localStorage.setItem("Admin", "Done");
         navigate("/admin");
         return;
