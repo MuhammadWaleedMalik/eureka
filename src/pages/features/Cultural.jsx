@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq'; // adjust path as per your file structure
+import { useGroq } from '../../hooks/useGroq';  // Import your custom hook
 
 const topic = {
   name: "EurekaAi",
@@ -18,19 +18,18 @@ const CulturalEventAi = () => {
   const [question, setQuestion] = useState('');
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
-  const { response: answer, fetchGroqResponse, loading: isAnswering, error: groqError } = useGroq();
 
-  const handleAsk = async () => {
+  // Use the useGroq hook
+  const { fetchGroqResponse, response, loading, error: groqError } = useGroq();
+
+  const handleAsk = () => {
     if (!question.trim()) {
       setError('Please enter a question about cultural events or festival dates.');
       return;
     }
 
     setError('');
-    await fetchGroqResponse(
-      `Answer the following cultural/festival date-related question in a short and helpful way, followed by a note that it's AI generated:\n`,
-      question
-    );
+    fetchGroqResponse('Cultural Event Query', question);
   };
 
   const handleCopy = () => {
@@ -78,21 +77,21 @@ const CulturalEventAi = () => {
             />
             <motion.button
               onClick={handleAsk}
-              disabled={isAnswering}
+              disabled={loading}
               className="px-6 py-3 rounded-lg font-medium text-white"
               style={{ backgroundColor: colors.primary }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {isAnswering ? "Answering..." : "Ask AI"}
+              {loading ? "Answering..." : "Ask AI"}
             </motion.button>
           </div>
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-          {groqError && <p className="mt-2 text-sm text-red-600">Error: {groqError}</p>}
+          {groqError && <p className="mt-2 text-sm text-red-600">{groqError}</p>}
         </motion.div>
 
         <AnimatePresence>
-          {(answer || isAnswering) && (
+          {(response || loading) && (
             <motion.div
               className="mb-8"
               initial={{ opacity: 0, y: 20 }}
@@ -102,8 +101,8 @@ const CulturalEventAi = () => {
             >
               <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-semibold">AI Response</h2>
-                {answer && (
-                  <CopyToClipboard text={answer} onCopy={handleCopy}>
+                {response && (
+                  <CopyToClipboard text={response} onCopy={handleCopy}>
                     <motion.button
                       className="px-4 py-2 text-sm rounded-md flex items-center"
                       style={{
@@ -119,12 +118,16 @@ const CulturalEventAi = () => {
                 )}
               </div>
               <div className="border border-gray-200 rounded-lg p-6 bg-white text-black shadow-sm">
-                {isAnswering && !answer ? (
+                {loading && !response ? (
                   <div className="flex justify-center h-40 items-center text-gray-700">
                     Processing your request...
                   </div>
                 ) : (
-                  <div className="prose max-w-none whitespace-pre-wrap">{answer}</div>
+                  <div className="prose max-w-none">
+                    {response.split('\n').map((line, idx) => (
+                      <p key={idx}>{line}</p>
+                    ))}
+                  </div>
                 )}
               </div>
             </motion.div>

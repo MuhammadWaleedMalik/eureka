@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 const API_URL = import.meta.env.VITE_REACT_APP_API_URL; 
+import useGetUser from "../hooks/useGetUSer";
 
 const stripePromise = loadStripe("pk_test_51QyXoa2cwOoBDHjfP7ww3jHcFNoqjjGMSqJuFC12ARkenMVmsXm17VYpEi3sj3hsexylHTsfsL0ThlWguTlcvCS000TmHKEIur");
 
 function CheckoutForm() {
+  const { user, refetchUser } = useGetUser();
   const stripe = useStripe();
   const elements = useElements();
   const [country, setCountry] = useState("");
@@ -38,23 +40,26 @@ function CheckoutForm() {
       }
 
       const token = localStorage.getItem("token");
-      console.log(token)
 
-const response = fetch(`${API_URL}/api/v1/payment/create`, {
-  method: "POST",
-  headers: { 
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}` // Add token from localStorage
-  },
-  body: JSON.stringify({
-    amount: 10000, // Amount in cents ($25)
-    paymentMethodId: paymentMethod.id,
-    country,
-  }),
-});
+      const response = await fetch(`${API_URL}/api/v1/payment/create`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          amount: 10000,
+          paymentMethodId: paymentMethod.id,
+          country,
+        }),
+      });
+
       const result = await response.json();
       if (result.success) {
         setMessage("Payment successful! 🎉");
+
+        // ✅ Refetch user and store credits
+        await refetchUser();
       } else {
         setMessage(`Payment failed: ${result.error}`);
       }
@@ -69,7 +74,6 @@ const response = fetch(`${API_URL}/api/v1/payment/create`, {
     <form onSubmit={handleSubmit} className="mt-6 space-y-4">
       <CardElement className="p-3 border rounded-md bg-white text-black" />
       
-      {/* Country Input */}
       <input
         type="text"
         placeholder="Country (e.g., US, IN)"
@@ -92,7 +96,8 @@ const response = fetch(`${API_URL}/api/v1/payment/create`, {
   );
 }
 
-export default function ProCheckoutPage() {
+
+export default function CheckoutPage() {
   return (
     <Elements stripe={stripePromise}>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-6">

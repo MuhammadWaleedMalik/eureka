@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq'; // Import the useGroq hook
+import { useGroq } from '../../hooks/useGroq'; // Import the hook
 
 const topic = {
   name: "EurekaAi",
@@ -20,7 +20,8 @@ const HealthAi = () => {
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
 
-  const { fetchGroqResponse, response, loading, error: groqError } = useGroq(); // Using the useGroq hook
+  // Use the custom hook
+  const { fetchGroqResponse, response, loading, error: groqError } = useGroq();
 
   const handleAsk = () => {
     if (!question.trim()) {
@@ -30,9 +31,7 @@ const HealthAi = () => {
 
     setIsAnswering(true);
     setError('');
-
-    fetchGroqResponse('health', question) // Pass the question to fetchGroqResponse
-      .finally(() => setIsAnswering(false));
+    fetchGroqResponse('health question', question); // Use the hook's function to fetch the AI response
   };
 
   const handleCopy = () => {
@@ -80,20 +79,20 @@ const HealthAi = () => {
             />
             <motion.button
               onClick={handleAsk}
-              disabled={isAnswering}
+              disabled={isAnswering || loading}
               className="px-6 py-3 rounded-lg font-medium text-white"
               style={{ backgroundColor: colors.primary }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {isAnswering ? "Thinking..." : "Ask AI"}
+              {isAnswering || loading ? "Thinking..." : "Ask AI"}
             </motion.button>
           </div>
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
         </motion.div>
 
         <AnimatePresence>
-          {(response || isAnswering) && (
+          {(response || isAnswering || loading) && (
             <motion.div
               className="mb-8"
               initial={{ opacity: 0, y: 20 }}
@@ -120,10 +119,12 @@ const HealthAi = () => {
                 )}
               </div>
               <div className="border border-gray-200 rounded-lg p-6 bg-white text-black shadow-sm">
-                {isAnswering && !response ? (
+                {loading && !response ? (
                   <div className="flex justify-center h-40 items-center text-gray-700">
                     Generating answer...
                   </div>
+                ) : groqError ? (
+                  <div className="text-red-600">{groqError}</div>
                 ) : (
                   <div className="prose max-w-none">
                     {response.split('\n').map((line, idx) => (

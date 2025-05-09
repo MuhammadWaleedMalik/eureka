@@ -15,7 +15,7 @@ const SignUp = () => {
   const [formError, setFormError] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+ 
 
   // Davinci Sky color scheme
   const colors = {
@@ -35,17 +35,15 @@ const SignUp = () => {
     setFormError("");
     setError("");
 
-    if (!email || !password || !username) {
+    if (!email || !password) {
       setFormError("Please fill in all fields");
       return;
     }
 
-    if (password !== confirmPassword) {
-      return setFormError(t("passwordMismatch"));
-    }
+   
 
     try {
-      const response = await register(email, password, username);
+      const response = await register(email, password);
       if (response !== undefined) {
         alert("Signed up successfully!");
         navigate("/login");

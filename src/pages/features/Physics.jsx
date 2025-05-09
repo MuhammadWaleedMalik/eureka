@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq';  // Importing the hook
+import { useGroq } from '../../hooks/useGroq'; // Import your custom hook
 
 const website = {
   name: "EurekaAi",
@@ -16,21 +16,19 @@ const colors = {
 
 const PhysicsAssistant = () => {
   const [question, setQuestion] = useState('');
-  const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
-  
-  // Using the Groq hook
-  const { fetchGroqResponse, response, loading, error: groqError } = useGroq(); 
+  const { fetchGroqResponse, response, loading, error: groqError } = useGroq(); // Destructure from the hook
 
-  const handleAsk = () => {
+  const handleAsk = async () => {
     if (!question.trim()) {
       setError('Please enter a physics question');
       return;
     }
 
-    setError('');
-    setIsCopied(false);
-    fetchGroqResponse("Physics Question", question);  // Passing question to Groq API
+    setError(''); // Clear any previous errors
+
+    // Call the fetchGroqResponse function
+    await fetchGroqResponse("Physics question:", question);
   };
 
   const handleCopy = () => {

@@ -74,7 +74,7 @@ const Login = () => {
         navigate("/admin");
         return;
       }
-
+      
       // Regular user login
       const response = await login(email, password);
       if (response !== undefined) {

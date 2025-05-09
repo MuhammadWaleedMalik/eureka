@@ -18,9 +18,8 @@ const HistoryAi = () => {
   const [question, setQuestion] = useState('');
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
-  
-  // Use the useGroq hook to handle API interaction
-  const { fetchGroqResponse, response, loading, error: groqError } = useGroq();
+
+  const { fetchGroqResponse, response, loading, error: groqError } = useGroq(); // Destructure the hook
 
   const handleAsk = () => {
     if (!question.trim()) {
@@ -28,8 +27,8 @@ const HistoryAi = () => {
       return;
     }
 
-    setError(''); // Clear previous errors
-    fetchGroqResponse("history", question);  // Use the hook to fetch the AI response
+    setError('');
+    fetchGroqResponse('Historical Event', question);  // Fetching the AI response using the hook
   };
 
   const handleCopy = () => {
@@ -88,7 +87,6 @@ const HistoryAi = () => {
             </motion.button>
           </div>
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-          {groqError && <p className="mt-2 text-sm text-red-600">{groqError}</p>}
         </motion.div>
 
         <AnimatePresence>

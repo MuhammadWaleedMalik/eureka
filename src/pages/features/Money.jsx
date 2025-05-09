@@ -1,33 +1,43 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq';
+import { useGroq } from '../../hooks/useGroq';  // Import your custom hook
 
 const topic = {
   name: "EurekaAi",
-  subdomain: "Nutrition Expert",
+  subdomain: "Money & Finance",
 };
 
 const colors = {
-  primary: "#fd790f",
+  primary: "#0f9d58", // Finance-themed green
   secondary: "#FFFFFF",
   text: "#000000",
 };
 
-const NutritionAi = () => {
+const MoneyFinanceAi = () => {
   const [question, setQuestion] = useState('');
+  const [isAnswering, setIsAnswering] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
-  const { fetchGroqResponse, response, loading, error: groqError } = useGroq(); // Destructure the hook
+  
+  // Using the custom hook
+  const { fetchGroqResponse, response, loading, error: groqError } = useGroq();
 
   const handleAsk = () => {
     if (!question.trim()) {
-      setError('Please enter a nutrition-related question.');
+      setError('Please enter a money or finance-related question.');
       return;
     }
 
+    setIsAnswering(true);
     setError('');
-    fetchGroqResponse('Nutrition Inquiry', question); // Call the hook's function with appropriate parameters
+    fetchGroqResponse('finance', question);  // Using fetchGroqResponse
+
+    // Handle potential errors from the Groq API
+    if (groqError) {
+      setError(groqError);
+      setIsAnswering(false);
+    }
   };
 
   const handleCopy = () => {
@@ -47,21 +57,21 @@ const NutritionAi = () => {
           <h1 className="text-4xl font-extrabold sm:text-5xl mb-4" style={{ color: colors.primary }}>
             {topic.name} – {topic.subdomain}
           </h1>
-          <p className="text-xl text-gray-600">Ask about butter, vitamins, calories, nutrients & more.</p>
+          <p className="text-xl text-gray-600">Ask about savings, investing, budgeting, or financial history.</p>
         </motion.div>
 
         <motion.div className="bg-gray-50 p-6 rounded-lg mb-8 shadow-sm">
           <h2 className="text-2xl font-semibold mb-4 text-black">How to Use</h2>
           <ol className="list-decimal text-black pl-5 space-y-2">
-            <li>Type in your nutrition question below.</li>
-            <li>Click “Ask AI” to generate a response.</li>
-            <li>Copy the answer if needed for later.</li>
+            <li>Type a question about money or finance.</li>
+            <li>Click “Ask AI.”</li>
+            <li>Read the answer and copy it if needed.</li>
           </ol>
         </motion.div>
 
         <motion.div className="mb-8">
           <label htmlFor="question" className="block text-lg font-medium text-gray-700 mb-2">
-            Your nutrition question:
+            Ask about money or finance:
           </label>
           <div className="flex space-x-4">
             <input
@@ -69,27 +79,26 @@ const NutritionAi = () => {
               id="question"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder="e.g. Is butter healthy for daily use?"
-              className="flex-1 px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+              placeholder="e.g. What is compound interest?"
+              className="flex-1 px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-600 focus:border-green-600"
               style={{ outline: 'none' }}
             />
             <motion.button
               onClick={handleAsk}
-              disabled={loading}
+              disabled={isAnswering || loading}
               className="px-6 py-3 rounded-lg font-medium text-white"
               style={{ backgroundColor: colors.primary }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {loading ? "Thinking..." : "Ask AI"}
+              {isAnswering || loading ? "Answering..." : "Ask AI"}
             </motion.button>
           </div>
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-          {groqError && <p className="mt-2 text-sm text-red-600">{groqError}</p>} {/* Show API error */}
         </motion.div>
 
         <AnimatePresence>
-          {(response || loading) && (
+          {(response || isAnswering || loading) && (
             <motion.div
               className="mb-8"
               initial={{ opacity: 0, y: 20 }}
@@ -104,7 +113,7 @@ const NutritionAi = () => {
                     <motion.button
                       className="px-4 py-2 text-sm rounded-md flex items-center"
                       style={{
-                        backgroundColor: isCopied ? '#D97706' : colors.primary,
+                        backgroundColor: isCopied ? '#0d9488' : colors.primary,
                         color: 'white',
                       }}
                       whileHover={{ scale: 1.05 }}
@@ -116,7 +125,7 @@ const NutritionAi = () => {
                 )}
               </div>
               <div className="border border-gray-200 rounded-lg p-6 bg-white text-black shadow-sm">
-                {loading && !response ? (
+                {loading || isAnswering ? (
                   <div className="flex justify-center h-40 items-center text-gray-700">
                     Generating answer...
                   </div>
@@ -135,11 +144,10 @@ const NutritionAi = () => {
         <motion.div className="bg-gray-50 p-6 rounded-lg border text-black border-gray-100">
           <h2 className="text-xl font-semibold mb-3">Sample Questions</h2>
           <ul className="list-disc pl-5 space-y-2">
-            <li>Is butter healthier than margarine?</li>
-            <li>What vitamins are in leafy greens?</li>
-            <li>How much protein does an egg have?</li>
-            <li>What foods are rich in iron?</li>
-            <li>Is intermittent fasting good for weight loss?</li>
+            <li>What is inflation and how does it affect savings?</li>
+            <li>How does the stock market work?</li>
+            <li>What is the difference between a Roth IRA and a 401(k)?</li>
+            <li>How can I build a monthly budget?</li>
           </ul>
         </motion.div>
       </div>
@@ -147,4 +155,4 @@ const NutritionAi = () => {
   );
 };
 
-export default NutritionAi;
+export default MoneyFinanceAi;

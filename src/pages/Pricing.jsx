@@ -12,17 +12,16 @@ const Pricing = () => {
       name: "Basic",
       price: "$25",
       frequency: "/month",
-      description: "Perfect for individuals getting started",
+      description: "Perfect for learners getting started",
       features: [
-        "General knowledge assistance",
-        "Biology insights and explanations",
-        "Nutrition facts and meal suggestions",
-        "Health and wellness tips",
-        "Basic enhancements",
-        "Standard resolution",
-        "Community support"
+        "Step-by-step math solutions (basic)",
+        "General science simulations",
+        "Explore basic history & culture",
+        "Health & wellness tips",
+        "Limited access to Everyday Life tools",
+        "Community support",
+        "Standard resolution results"
       ],
-      
       cta: "Get Started",
       route: "/pricing/basic",
       featured: false
@@ -32,19 +31,18 @@ const Pricing = () => {
       name: "Standard",
       price: "$50",
       frequency: "/month",
-      description: "For content creators",
+      description: "Ideal for students and educators",
       features: [
-        "General knowledge assistance",
-        "Biology insights and explanations",
-        "Nutrition facts and meal suggestions",
-        "Health and wellness tips",
-        "Basic enhancements",
-        "Standard resolution",
+        "Full access to all math topics (Algebra, Calculus, Geometry)",
+        "Advanced science & engineering tools",
+        "Society & culture exploration tools",
+        "Daily life assistant tools (health, finance, etc.)",
+        "Priority response",
+        "Standard enhancements",
         "Community support"
       ],
-      
       cta: "Popular Choice",
-      route: "/pricing/enterprise",
+      route: "/pricing/standard",
       featured: true
     },
     {
@@ -52,22 +50,22 @@ const Pricing = () => {
       name: "Premium",
       price: "$99",
       frequency: "/month",
-      description: "For professionals & businesses",
+      description: "Best for professionals, educators & researchers",
       features: [
-        "General knowledge assistance",
-        "Biology insights and explanations",
-        "Nutrition facts and meal suggestions",
-        "Health and wellness tips",
-        "Basic enhancements",
-        "Advanced enhancements",
-         "Community support"
+        "Unlimited math step-by-step solutions",
+        "Full simulation access (all science fields)",
+        "Detailed insights into global society & culture topics",
+        "Advanced Everyday Life assistance (entertainment, trivia, finance)",
+        "High-priority support",
+        "Advanced enhancements & analytics",
+        "Early access to new tools"
       ],
-      
       cta: "Go Premium",
-      route: "/pricing/pro",
+      route: "/pricing/premium",
       featured: false
     }
   ];
+  
 
   return (
     <div className="w-full px-6 sm:px-10 lg:px-12 py-24 flex flex-col items-center bg-gray-50">
@@ -77,7 +75,7 @@ const Pricing = () => {
         transition={{ duration: 0.5 }}
         className="text-center mb-16"
       >
-        <h1 className="text-5xl font-extrabold mb-4 text-gray-900">Davinci Sky Pricing</h1>
+        <h1 className="text-5xl font-extrabold mb-4 text-gray-900">Eureka AI</h1>
         <h2 className="text-3xl font-semibold text-gray-600">
           Choose the plan that fits your creative workflow
         </h2>

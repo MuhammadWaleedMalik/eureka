@@ -1,39 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq';
+import { useGroq } from '../../hooks/useGroq'; // ✅ Import your hook here
 
 const topic = {
   name: "EurekaAi",
-  subdomain: "Nutrition Expert",
+  subdomain: "Surprise Generator",
 };
 
 const colors = {
-  primary: "#fd790f",
+  primary: "#ec4899", // Pink
   secondary: "#FFFFFF",
   text: "#000000",
 };
 
-const NutritionAi = () => {
+const SurpriseAi = () => {
   const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
   const [isCopied, setIsCopied] = useState(false);
-  const [error, setError] = useState('');
-  const { fetchGroqResponse, response, loading, error: groqError } = useGroq(); // Destructure the hook
+  const [localError, setLocalError] = useState('');
 
-  const handleAsk = () => {
+  // ✅ Hook usage
+  const { fetchGroqResponse, response, loading, error } = useGroq();
+
+  const handleAsk = async () => {
     if (!question.trim()) {
-      setError('Please enter a nutrition-related question.');
+      setLocalError('Please ask something about surprises!');
       return;
     }
 
-    setError('');
-    fetchGroqResponse('Nutrition Inquiry', question); // Call the hook's function with appropriate parameters
+    setLocalError('');
+    setAnswer(''); // clear previous answer
+    await fetchGroqResponse('Give a fun surprise idea for:', question);
   };
 
   const handleCopy = () => {
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
+
+  useEffect(() => {
+    if (response) {
+      const formatted = `**Q:** ${question}\n\n**A (by ${topic.name} AI):**\n${response}\n\n*This is a playful AI-generated surprise suggestion. For more fun, just keep asking!*`;
+      setAnswer(formatted);
+    }
+  }, [response]);
 
   return (
     <motion.div
@@ -47,21 +58,21 @@ const NutritionAi = () => {
           <h1 className="text-4xl font-extrabold sm:text-5xl mb-4" style={{ color: colors.primary }}>
             {topic.name} – {topic.subdomain}
           </h1>
-          <p className="text-xl text-gray-600">Ask about butter, vitamins, calories, nutrients & more.</p>
+          <p className="text-xl text-gray-600">Ask anything about planning or receiving surprises, gifts, pranks, or magical moments!</p>
         </motion.div>
 
         <motion.div className="bg-gray-50 p-6 rounded-lg mb-8 shadow-sm">
           <h2 className="text-2xl font-semibold mb-4 text-black">How to Use</h2>
           <ol className="list-decimal text-black pl-5 space-y-2">
-            <li>Type in your nutrition question below.</li>
-            <li>Click “Ask AI” to generate a response.</li>
-            <li>Copy the answer if needed for later.</li>
+            <li>Enter a surprise-related question or idea.</li>
+            <li>Click “Ask AI”.</li>
+            <li>Enjoy the surprise suggestion and copy it if you like!</li>
           </ol>
         </motion.div>
 
         <motion.div className="mb-8">
           <label htmlFor="question" className="block text-lg font-medium text-gray-700 mb-2">
-            Your nutrition question:
+            Ask something surprising:
           </label>
           <div className="flex space-x-4">
             <input
@@ -69,8 +80,8 @@ const NutritionAi = () => {
               id="question"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder="e.g. Is butter healthy for daily use?"
-              className="flex-1 px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+              placeholder="e.g. How do I surprise my best friend?"
+              className="flex-1 px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
               style={{ outline: 'none' }}
             />
             <motion.button
@@ -84,12 +95,11 @@ const NutritionAi = () => {
               {loading ? "Thinking..." : "Ask AI"}
             </motion.button>
           </div>
-          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-          {groqError && <p className="mt-2 text-sm text-red-600">{groqError}</p>} {/* Show API error */}
+          {(localError || error) && <p className="mt-2 text-sm text-red-600">{localError || error}</p>}
         </motion.div>
 
         <AnimatePresence>
-          {(response || loading) && (
+          {(answer || loading) && (
             <motion.div
               className="mb-8"
               initial={{ opacity: 0, y: 20 }}
@@ -98,13 +108,13 @@ const NutritionAi = () => {
               transition={{ duration: 0.3 }}
             >
               <div className="flex justify-between items-center mb-3">
-                <h2 className="text-xl font-semibold">AI Response</h2>
-                {response && (
-                  <CopyToClipboard text={response} onCopy={handleCopy}>
+                <h2 className="text-xl font-semibold">Surprise AI Says</h2>
+                {answer && (
+                  <CopyToClipboard text={answer} onCopy={handleCopy}>
                     <motion.button
                       className="px-4 py-2 text-sm rounded-md flex items-center"
                       style={{
-                        backgroundColor: isCopied ? '#D97706' : colors.primary,
+                        backgroundColor: isCopied ? '#be185d' : colors.primary,
                         color: 'white',
                       }}
                       whileHover={{ scale: 1.05 }}
@@ -116,13 +126,13 @@ const NutritionAi = () => {
                 )}
               </div>
               <div className="border border-gray-200 rounded-lg p-6 bg-white text-black shadow-sm">
-                {loading && !response ? (
+                {loading && !answer ? (
                   <div className="flex justify-center h-40 items-center text-gray-700">
-                    Generating answer...
+                    Generating fun idea...
                   </div>
                 ) : (
                   <div className="prose max-w-none">
-                    {response.split('\n').map((line, idx) => (
+                    {answer.split('\n').map((line, idx) => (
                       <p key={idx}>{line}</p>
                     ))}
                   </div>
@@ -133,13 +143,12 @@ const NutritionAi = () => {
         </AnimatePresence>
 
         <motion.div className="bg-gray-50 p-6 rounded-lg border text-black border-gray-100">
-          <h2 className="text-xl font-semibold mb-3">Sample Questions</h2>
+          <h2 className="text-xl font-semibold mb-3">Sample Surprise Ideas</h2>
           <ul className="list-disc pl-5 space-y-2">
-            <li>Is butter healthier than margarine?</li>
-            <li>What vitamins are in leafy greens?</li>
-            <li>How much protein does an egg have?</li>
-            <li>What foods are rich in iron?</li>
-            <li>Is intermittent fasting good for weight loss?</li>
+            <li>What's a creative birthday surprise for a movie lover?</li>
+            <li>How can I prank my brother in a harmless way?</li>
+            <li>What surprise gift could I give someone who loves space?</li>
+            <li>Any magical ways to say "thank you"?</li>
           </ul>
         </motion.div>
       </div>
@@ -147,4 +156,4 @@ const NutritionAi = () => {
   );
 };
 
-export default NutritionAi;
+export default SurpriseAi;

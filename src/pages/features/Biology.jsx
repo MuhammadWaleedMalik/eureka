@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq'; // 👈 hook import
+import { useGroq } from '../../hooks/useGroq'; // Make sure the path is correct
 
 const topic = {
   name: "EurekaAi",
@@ -17,23 +17,29 @@ const colors = {
 const BiologyAi = () => {
   const [question, setQuestion] = useState('');
   const [isCopied, setIsCopied] = useState(false);
-  const [localError, setLocalError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const { response, loading, error, fetchGroqResponse } = useGroq();
+  const { fetchGroqResponse, response, loading, error } = useGroq();
 
-  const handleAsk = () => {
+  const handleAsk = async () => {
     if (!question.trim()) {
-      setLocalError('Please enter a biology-related question.');
+      setErrorMessage('Please enter a biology-related question.');
       return;
     }
-    setLocalError('');
-    fetchGroqResponse("Biology:", question); // 👈 Using the hook
+    setErrorMessage('');
+    await fetchGroqResponse('Answer this biology question:', question);
   };
 
   const handleCopy = () => {
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
+
+  useEffect(() => {
+    if (error) {
+      setErrorMessage(error);
+    }
+  }, [error]);
 
   return (
     <motion.div
@@ -85,7 +91,7 @@ const BiologyAi = () => {
               {loading ? "Answering..." : "Ask AI"}
             </motion.button>
           </div>
-          {(localError || error) && <p className="mt-2 text-sm text-red-600">{localError || error}</p>}
+          {errorMessage && <p className="mt-2 text-sm text-red-600">{errorMessage}</p>}
         </motion.div>
 
         <AnimatePresence>
@@ -121,8 +127,10 @@ const BiologyAi = () => {
                     Thinking...
                   </div>
                 ) : (
-                  <div className="prose max-w-none whitespace-pre-wrap">
-                    {response}
+                  <div className="prose max-w-none">
+                    {response.split('\n').map((line, idx) => (
+                      <p key={idx}>{line}</p>
+                    ))}
                   </div>
                 )}
               </div>

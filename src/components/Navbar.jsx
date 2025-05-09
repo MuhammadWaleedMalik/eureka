@@ -24,7 +24,7 @@ const website = {
 const Navbar = () => {
   
   const { t, i18n } = useTranslation();
-  const  isAuthenticated =localStorage.getItem("token") === "true";
+  const  isAuthenticated =localStorage.getItem("token")
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);

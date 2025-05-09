@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq'; // Import the custom hook
+import { useGroq } from '../../hooks/useGroq'; // adjust path as needed
 
 const topic = {
   name: "EurekaAi",
@@ -18,22 +18,29 @@ const TimeDateAi = () => {
   const [question, setQuestion] = useState('');
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
-  const { fetchGroqResponse, response, loading, error: groqError } = useGroq(); // Use the hook
 
-  const handleAsk = async () => {
+  const { fetchGroqResponse, response, loading, error: hookError } = useGroq();
+
+  const handleAsk = () => {
     if (!question.trim()) {
       setError('Please enter a time or date-related question.');
       return;
     }
 
     setError('');
-    await fetchGroqResponse('Time & Date', question); // Use the fetchGroqResponse from the hook
+    fetchGroqResponse("Answer this time/date-related question precisely:", question);
   };
 
   const handleCopy = () => {
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
+
+  useEffect(() => {
+    if (hookError) {
+      setError(hookError);
+    }
+  }, [hookError]);
 
   return (
     <motion.div
@@ -121,16 +128,13 @@ const TimeDateAi = () => {
                     Processing your request...
                   </div>
                 ) : (
-                  <div className="prose max-w-none">
-                    {response.split('\n').map((line, idx) => (
-                      <p key={idx}>{line}</p>
-                    ))}
+                  <div className="prose max-w-none whitespace-pre-line">
+                    {response}
                   </div>
                 )}
               </div>
             </motion.div>
           )}
-          {groqError && <p className="text-red-500">{groqError}</p>}
         </AnimatePresence>
 
         <motion.div className="bg-gray-50 p-6 rounded-lg border text-black border-gray-100">

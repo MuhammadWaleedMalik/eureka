@@ -17,11 +17,11 @@ export function useGroq() {
   // ✅ Always initialize the hook at the top level (correct way)
   const { removeCredits } = useRemoveCredits(); 
 
-  // const isAvaliable = localStorage.getItem("credits");
-  // if(isAvaliable == "0") {
-  //   alert('You Donot have enough Credits')
-  //   window.location.href = '/pricing'
-  // }
+  const isAvaliable = localStorage.getItem("credits");
+  if(isAvaliable == "0") {
+    alert('You Donot have enough Credits')
+    window.location.href = '/pricing'
+  }
 
   const fetchGroqResponse = async (taskType, prompt) => {
     setLoading(true);

@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq';
+import { useGroq } from '../../hooks/useGroq'; // Import the useGroq hook
 
 const topic = {
   name: "EurekaAi",
-  subdomain: "Nutrition Expert",
+  subdomain: "Words & Linguistics",
 };
 
 const colors = {
-  primary: "#fd790f",
+  primary: "#10b981", // Emerald green
   secondary: "#FFFFFF",
   text: "#000000",
 };
 
-const NutritionAi = () => {
+const WordsLinguisticsAi = () => {
   const [question, setQuestion] = useState('');
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
-  const { fetchGroqResponse, response, loading, error: groqError } = useGroq(); // Destructure the hook
+  const { fetchGroqResponse, response, loading, error: groqError } = useGroq();
 
   const handleAsk = () => {
     if (!question.trim()) {
-      setError('Please enter a nutrition-related question.');
+      setError('Please enter a linguistics-related question.');
       return;
     }
 
     setError('');
-    fetchGroqResponse('Nutrition Inquiry', question); // Call the hook's function with appropriate parameters
+    fetchGroqResponse('Linguistics', question); // Call the useGroq hook to fetch the answer
   };
 
   const handleCopy = () => {
@@ -47,21 +47,21 @@ const NutritionAi = () => {
           <h1 className="text-4xl font-extrabold sm:text-5xl mb-4" style={{ color: colors.primary }}>
             {topic.name} – {topic.subdomain}
           </h1>
-          <p className="text-xl text-gray-600">Ask about butter, vitamins, calories, nutrients & more.</p>
+          <p className="text-xl text-gray-600">Ask about language origins, grammar rules, or word meanings.</p>
         </motion.div>
 
         <motion.div className="bg-gray-50 p-6 rounded-lg mb-8 shadow-sm">
           <h2 className="text-2xl font-semibold mb-4 text-black">How to Use</h2>
           <ol className="list-decimal text-black pl-5 space-y-2">
-            <li>Type in your nutrition question below.</li>
-            <li>Click “Ask AI” to generate a response.</li>
-            <li>Copy the answer if needed for later.</li>
+            <li>Type a question related to words or linguistics.</li>
+            <li>Click “Ask AI.”</li>
+            <li>Review and optionally copy the response.</li>
           </ol>
         </motion.div>
 
         <motion.div className="mb-8">
           <label htmlFor="question" className="block text-lg font-medium text-gray-700 mb-2">
-            Your nutrition question:
+            Ask about a word, grammar, or linguistic topic:
           </label>
           <div className="flex space-x-4">
             <input
@@ -69,8 +69,8 @@ const NutritionAi = () => {
               id="question"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder="e.g. Is butter healthy for daily use?"
-              className="flex-1 px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+              placeholder="e.g. What is the origin of the word 'robot'?"
+              className="flex-1 px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               style={{ outline: 'none' }}
             />
             <motion.button
@@ -81,11 +81,10 @@ const NutritionAi = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {loading ? "Thinking..." : "Ask AI"}
+              {loading ? "Answering..." : "Ask AI"}
             </motion.button>
           </div>
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-          {groqError && <p className="mt-2 text-sm text-red-600">{groqError}</p>} {/* Show API error */}
         </motion.div>
 
         <AnimatePresence>
@@ -104,7 +103,7 @@ const NutritionAi = () => {
                     <motion.button
                       className="px-4 py-2 text-sm rounded-md flex items-center"
                       style={{
-                        backgroundColor: isCopied ? '#D97706' : colors.primary,
+                        backgroundColor: isCopied ? '#059669' : colors.primary,
                         color: 'white',
                       }}
                       whileHover={{ scale: 1.05 }}
@@ -135,11 +134,10 @@ const NutritionAi = () => {
         <motion.div className="bg-gray-50 p-6 rounded-lg border text-black border-gray-100">
           <h2 className="text-xl font-semibold mb-3">Sample Questions</h2>
           <ul className="list-disc pl-5 space-y-2">
-            <li>Is butter healthier than margarine?</li>
-            <li>What vitamins are in leafy greens?</li>
-            <li>How much protein does an egg have?</li>
-            <li>What foods are rich in iron?</li>
-            <li>Is intermittent fasting good for weight loss?</li>
+            <li>What’s the origin of the word “pandemic”?</li>
+            <li>What is the passive voice in grammar?</li>
+            <li>How do dialects evolve?</li>
+            <li>What is phonetics vs phonology?</li>
           </ul>
         </motion.div>
       </div>
@@ -147,4 +145,4 @@ const NutritionAi = () => {
   );
 };
 
-export default NutritionAi;
+export default WordsLinguisticsAi;

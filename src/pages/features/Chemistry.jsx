@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq'; // adjust path as necessary
+import { useGroq } from '../../hooks/useGroq';  // Import your custom hook
 
 const website = {
   name: "EurekaChem",
@@ -16,18 +16,33 @@ const colors = {
 
 const ChemistryAssistant = () => {
   const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
   const [isCopied, setIsCopied] = useState(false);
-  const [localError, setLocalError] = useState('');
+  const [error, setError] = useState('');
 
-  const { fetchGroqResponse, response, loading, error } = useGroq();
+  // Use the custom hook
+  const { response, loading, error: groqError, fetchGroqResponse } = useGroq();
 
   const handleSubmit = async () => {
     if (!question.trim()) {
-      setLocalError('Please enter a chemistry question');
+      setError('Please enter a chemistry question');
       return;
     }
-    setLocalError('');
-    await fetchGroqResponse("Chemistry AI:", question);
+
+    setError('');
+
+    try {
+      // Call the fetchGroqResponse with the task type and question
+      await fetchGroqResponse('chemistryTask', question);
+
+      if (groqError) {
+        setAnswer('Error fetching chemistry explanation. Please try again.');
+      } else {
+        setAnswer(response);
+      }
+    } catch (err) {
+      setAnswer('Error fetching chemistry explanation. Please try again.');
+    }
   };
 
   const handleCopy = () => {
@@ -60,7 +75,7 @@ const ChemistryAssistant = () => {
 
   const buttonVariants = {
     rest: { scale: 1 },
-    hover: {
+    hover: { 
       scale: 1.05,
       backgroundColor: `${colors.primary}E6`,
       transition: {
@@ -71,7 +86,7 @@ const ChemistryAssistant = () => {
   };
 
   return (
-    <motion.div
+    <motion.div 
       className="min-h-screen mt-24 py-12 px-4 sm:px-6 lg:px-8"
       style={{ backgroundColor: colors.secondary }}
       initial="hidden"
@@ -79,11 +94,11 @@ const ChemistryAssistant = () => {
       variants={containerVariants}
     >
       <div className="max-w-4xl mx-auto">
-        <motion.div
+        <motion.div 
           className="text-center mb-12"
           variants={itemVariants}
         >
-          <h1
+          <h1 
             className="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4"
             style={{ color: colors.primary }}
           >
@@ -92,7 +107,7 @@ const ChemistryAssistant = () => {
           <p className="text-xl text-gray-600">{website.slogan}</p>
         </motion.div>
 
-        <motion.div
+        <motion.div 
           className="bg-gray-50 p-6 rounded-lg mb-8 shadow-sm"
           variants={itemVariants}
         >
@@ -105,7 +120,10 @@ const ChemistryAssistant = () => {
           </ol>
         </motion.div>
 
-        <motion.div className="mb-8" variants={itemVariants}>
+        <motion.div 
+          className="mb-8"
+          variants={itemVariants}
+        >
           <label htmlFor="question" className="block text-lg font-medium text-gray-700 mb-2">
             Enter your chemistry question:
           </label>
@@ -115,41 +133,83 @@ const ChemistryAssistant = () => {
               id="question"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder="e.g. Explain Le Chatelier's Principle"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300"
+              placeholder="e.g. Explain Le Chatelier's principle"
+              className="flex-1 px-4 py-3 border text-orange-500 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              style={{ outline: 'none' }}
             />
             <motion.button
               onClick={handleSubmit}
-              className="px-6 py-2 text-white rounded-md"
+              disabled={loading}
+              className="px-6 py-3 rounded-lg font-medium text-black flex items-center"
               style={{ backgroundColor: colors.primary }}
               variants={buttonVariants}
+              initial="rest"
               whileHover="hover"
               whileTap="tap"
-              disabled={loading}
             >
-              {loading ? "Analyzing..." : "Analyze"}
+              {loading ? (
+                <>Analyzing...</>
+              ) : (
+                'Analyze'
+              )}
             </motion.button>
           </div>
-          {localError && <p className="text-red-500 mt-2">{localError}</p>}
-          {error && <p className="text-red-500 mt-2">{error}</p>}
+          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
         </motion.div>
 
-        {response && (
-          <motion.div
-            className="bg-white border border-gray-200 p-6 rounded-lg shadow-md relative"
-            variants={itemVariants}
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold">AI Response:</h3>
-              <CopyToClipboard text={response} onCopy={handleCopy}>
-                <button className="text-sm text-blue-600 hover:underline">
-                  {isCopied ? "Copied!" : "Copy"}
-                </button>
-              </CopyToClipboard>
-            </div>
-            <pre className="whitespace-pre-wrap text-gray-800">{response}</pre>
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {(answer || loading) && (
+            <motion.div 
+              className="mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex justify-between items-center mb-3">
+                <h2 className="text-xl font-semibold">Chemistry Solution</h2>
+                {answer && (
+                  <CopyToClipboard text={answer} onCopy={handleCopy}>
+                    <motion.button
+                      className="px-4 py-2 text-sm rounded-md flex items-center"
+                      style={{ 
+                        backgroundColor: isCopied ? '#10B981' : colors.primary,
+                        color: 'white'
+                      }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {isCopied ? (
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                        </svg>
+                      )}
+                      {isCopied ? 'Copied!' : 'Copy'}
+                    </motion.button>
+                  </CopyToClipboard>
+                )}
+              </div>
+
+              <div className="border text-black border-gray-200 rounded-lg p-6 bg-white min-h-64 shadow-sm">
+                {loading && !answer ? (
+                  <div className="flex items-center justify-center h-64">
+                    <p className="text-gray-500">Analyzing chemistry question...</p>
+                  </div>
+                ) : (
+                  <div className="prose max-w-none">
+                    {answer.split('\n').map((paragraph, i) => (
+                      <p key={i}>{paragraph}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );

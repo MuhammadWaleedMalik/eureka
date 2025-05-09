@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq';
+import { useGroq } from '../../hooks/useGroq'; // Import your custom hook
 
 const website = {
   name: "EurekaAi",
@@ -17,53 +17,24 @@ const colors = {
 const PercentageCalculator = () => {
   const [prompt, setPrompt] = useState('');
   const [calculatedResult, setCalculatedResult] = useState('');
+  const [isCalculating, setIsCalculating] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
-  
-  // Use the Groq hook
-  const { fetchGroqResponse, response, loading, error: apiError } = useGroq();
 
-  const handleCalculate = async () => {
+  const { fetchGroqResponse, response, loading, error: hookError } = useGroq(); // Use the hook
+
+  const handleCalculate = () => {
     if (!prompt.trim()) {
       setError('Please enter a percentage calculation');
       return;
     }
 
+    setIsCalculating(true);
     setError('');
     
-    // Format the prompt for the API
-    const calculationPrompt = `Calculate the following percentage problem and provide the answer in markdown format with clear explanation:
-    Problem: ${prompt}
-    
-    Please format your response as:
-    # [Problem Statement]
-    
-    **Solution:**
-    - [Step-by-step explanation]
-    - [Final answer with units if applicable]
-    
-    **Calculated by ${website.name} AI**`;
-
-    try {
-      await fetchGroqResponse("percentage calculation:", calculationPrompt);
-    } catch (err) {
-      setError('Failed to calculate. Please try again.');
-    }
+    // Call your fetchGroqResponse method from the custom hook
+    fetchGroqResponse('percentage-calculation', prompt); 
   };
-
-  // Update the calculated result when the API response changes
-  React.useEffect(() => {
-    if (response) {
-      setCalculatedResult(response);
-    }
-  }, [response]);
-
-  // Handle API errors
-  React.useEffect(() => {
-    if (apiError) {
-      setError(apiError);
-    }
-  }, [apiError]);
 
   const handleCopy = () => {
     setIsCopied(true);
@@ -178,7 +149,7 @@ const PercentageCalculator = () => {
             />
             <motion.button
               onClick={handleCalculate}
-              disabled={loading}
+              disabled={isCalculating || loading}
               className="px-6 py-3 rounded-lg font-medium text-black flex items-center"
               style={{ backgroundColor: colors.primary }}
               variants={buttonVariants}
@@ -186,7 +157,7 @@ const PercentageCalculator = () => {
               whileHover="hover"
               whileTap="tap"
             >
-              {loading ? (
+              {isCalculating || loading ? (
                 <>
                   <motion.svg
                     className="animate-spin -ml-1 mr-2 h-5 w-5 text-black"
@@ -208,10 +179,11 @@ const PercentageCalculator = () => {
             </motion.button>
           </div>
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+          {hookError && <p className="mt-2 text-sm text-red-600">{hookError}</p>} {/* Display hook error */}
         </motion.div>
 
         <AnimatePresence>
-          {(calculatedResult || loading) && (
+          {(calculatedResult || isCalculating || loading) && (
             <motion.div
               className="mb-8"
               initial={{ opacity: 0, y: 20 }}
@@ -275,29 +247,14 @@ const PercentageCalculator = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="prose max-w-none">
-                    {calculatedResult.split('\n').map((paragraph, i) => (
-                      <p key={i}>{paragraph}</p>
-                    ))}
+                  <div className="prose max-w-none text-black">
+                    <p>{calculatedResult}</p>
                   </div>
                 )}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
-        <motion.div
-          className="bg-orange-50 p-6 rounded-lg border text-black border-orange-100"
-          variants={itemVariants}
-        >
-          <h2 className="text-xl font-semibold mb-3">Tips for Best Results</h2>
-          <ul className="list-disc pl-5 space-y-2">
-            <li>Use clear percentage expressions like "20% of 150"</li>
-            <li>Avoid unsupported symbols or ambiguous phrases</li>
-            <li>For complex percentage problems, simplify them first</li>
-            <li>Verify critical calculations manually</li>
-          </ul>
-        </motion.div>
       </div>
     </motion.div>
   );

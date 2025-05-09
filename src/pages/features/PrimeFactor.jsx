@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useGroq } from '../../hooks/useGroq'; // Import the useGroq hook
 
 const PrimeFactorization = () => {
   const [number, setNumber] = useState('');
   const [result, setResult] = useState('');
   const [error, setError] = useState('');
-
-  const { fetchGroqResponse, response, loading, error: groqError } = useGroq(); // Use the hook
 
   const primeFactorize = (num) => {
     let factors = [];
@@ -31,7 +28,7 @@ const PrimeFactorization = () => {
     return factors;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const num = parseInt(number);
 
     if (isNaN(num) || num <= 0) {
@@ -43,11 +40,6 @@ const PrimeFactorization = () => {
     setError('');
     const factors = primeFactorize(num);
     setResult(factors.join(' × '));
-
-    // Optionally fetch a response from the Groq API after the prime factorization is computed
-    const taskType = 'Prime Factorization Task'; // Adjust as needed
-    const prompt = `Find the prime factors of ${num}.`;
-    await fetchGroqResponse(taskType, prompt);
   };
 
   return (
@@ -57,7 +49,7 @@ const PrimeFactorization = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="max-w-lg mx-auto bg-white text-black mt-24 p-6 rounded-lg shadow-md">
+      <div className="max-w-lg mx-auto bg-white text-black mt-24  p-6 rounded-lg shadow-md">
         <h1 className="text-3xl font-bold text-center text-orange-500 mb-6">Prime Factorization Calculator</h1>
 
         <div className="mb-4">
@@ -99,40 +91,6 @@ const PrimeFactorization = () => {
             transition={{ duration: 0.5 }}
           >
             <p className="text-lg">Prime Factors: {result}</p>
-          </motion.div>
-        )}
-
-        {/* Optionally, display response from Groq */}
-        {response && !loading && (
-          <motion.div
-            className="text-lg text-center text-blue-600 mt-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <p>Groq Response: {response}</p>
-          </motion.div>
-        )}
-
-        {loading && (
-          <motion.div
-            className="text-lg text-center text-gray-500 mt-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <p>Loading Groq Response...</p>
-          </motion.div>
-        )}
-
-        {groqError && (
-          <motion.div
-            className="text-sm text-red-500 text-center mt-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <p>Error: {groqError}</p>
           </motion.div>
         )}
       </div>

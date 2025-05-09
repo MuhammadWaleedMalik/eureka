@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq'; // Import the useGroq hook
+import { useGroq } from '../../hooks/useGroq'; // ✅ Adjust path if needed
 
 const topic = {
   name: "EurekaAi",
@@ -9,19 +9,17 @@ const topic = {
 };
 
 const colors = {
-    primary: "#fd790f",
-    secondary: "#FFFFFF",
-    text: "#000000",
+  primary: "#fd790f",
+  secondary: "#FFFFFF",
+  text: "#000000",
 };
 
 const DemographicEventAi = () => {
   const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
-  const [isAnswering, setIsAnswering] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
-  
-  // Use the custom hook to fetch responses
+  const [triggered, setTriggered] = useState(false);
+
   const { fetchGroqResponse, response, loading, error: groqError } = useGroq();
 
   const handleAsk = () => {
@@ -30,20 +28,14 @@ const DemographicEventAi = () => {
       return;
     }
 
-    setIsAnswering(true);
     setError('');
-
-    // Call the fetchGroqResponse function from the useGroq hook
-    fetchGroqResponse('Demographic Event', question)
-      .then(() => {
-        setAnswer(response);
-        setIsAnswering(false);
-      })
-      .catch(() => {
-        setError(groqError || 'An error occurred');
-        setIsAnswering(false);
-      });
+    setTriggered(true);
+    fetchGroqResponse("Answer this demographic event question:", question);
   };
+
+  useEffect(() => {
+    if (groqError) setError(groqError);
+  }, [groqError]);
 
   const handleCopy = () => {
     setIsCopied(true);
@@ -90,20 +82,20 @@ const DemographicEventAi = () => {
             />
             <motion.button
               onClick={handleAsk}
-              disabled={isAnswering}
+              disabled={loading}
               className="px-6 py-3 rounded-lg font-medium text-white"
               style={{ backgroundColor: colors.primary }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {isAnswering ? "Answering..." : "Ask AI"}
+              {loading ? "Answering..." : "Ask AI"}
             </motion.button>
           </div>
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
         </motion.div>
 
         <AnimatePresence>
-          {(answer || isAnswering) && (
+          {(response && triggered) && (
             <motion.div
               className="mb-8"
               initial={{ opacity: 0, y: 20 }}
@@ -113,8 +105,8 @@ const DemographicEventAi = () => {
             >
               <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-semibold">AI Response</h2>
-                {answer && (
-                  <CopyToClipboard text={answer} onCopy={handleCopy}>
+                {response && (
+                  <CopyToClipboard text={response} onCopy={handleCopy}>
                     <motion.button
                       className="px-4 py-2 text-sm rounded-md flex items-center"
                       style={{
@@ -130,15 +122,13 @@ const DemographicEventAi = () => {
                 )}
               </div>
               <div className="border border-gray-200 rounded-lg p-6 bg-white text-black shadow-sm">
-                {isAnswering && !answer ? (
+                {loading ? (
                   <div className="flex justify-center h-40 items-center text-gray-700">
                     Generating answer...
                   </div>
                 ) : (
-                  <div className="prose max-w-none">
-                    {answer.split('\n').map((line, idx) => (
-                      <p key={idx}>{line}</p>
-                    ))}
+                  <div className="prose max-w-none whitespace-pre-line">
+                    {response}
                   </div>
                 )}
               </div>

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useGroq } from '../../hooks/useGroq'; // Assuming the hook is in the same folder
 
 const DecimalCalculation = () => {
   const [number1, setNumber1] = useState('');
   const [number2, setNumber2] = useState('');
   const [result, setResult] = useState(null);
   const [operation, setOperation] = useState('');
-  const { fetchGroqResponse, response, loading, error } = useGroq(); // Destructure from the hook
 
   const handleCalculation = (op) => {
     const num1 = parseFloat(number1);
@@ -44,9 +42,6 @@ const DecimalCalculation = () => {
 
     setResult(calcResult.toFixed(2));
     setOperation(op);
-
-    // Trigger Groq API call after calculation
-    fetchGroqResponse('Calculation Result', `The result of ${num1} ${op} ${num2} is ${calcResult.toFixed(2)}`);
   };
 
   return (
@@ -117,18 +112,6 @@ const DecimalCalculation = () => {
               transition={{ duration: 0.5 }}
             >
               <p>Result: {result}</p>
-            </motion.div>
-          )}
-          {loading && <p className="text-center text-gray-500">Loading Groq response...</p>}
-          {error && <p className="text-center text-red-500">Error: {error}</p>}
-          {response && !loading && !error && (
-            <motion.div
-              className="text-lg font-medium text-center text-gray-600"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <p>Groq Response: {response}</p>
             </motion.div>
           )}
         </div>

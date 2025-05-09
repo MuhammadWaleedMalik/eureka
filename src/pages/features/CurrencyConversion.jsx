@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq'; // Import the hook
+import { useGroq } from '../../hooks/useGroq';
 
 const topic = {
   name: "CurrencyAI",
@@ -9,9 +9,9 @@ const topic = {
 };
 
 const colors = {
-    primary: "#fd790f",
-    secondary: "#FFFFFF",
-    text: "#000000",
+  primary: "#fd790f",
+  secondary: "#FFFFFF",
+  text: "#000000",
 };
 
 const CurrencyConverter = () => {
@@ -23,7 +23,9 @@ const CurrencyConverter = () => {
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
 
-  const { fetchGroqResponse, response, loading, error: groqError } = useGroq(); // Use the Groq hook
+  // Groq hook integration
+  const [query, setQuery] = useState('');
+  const { fetchGroqResponse, response, loading: aiLoading, error: aiError } = useGroq();
 
   const handleConvert = async () => {
     if (!amount || isNaN(amount) || amount <= 0) {
@@ -32,16 +34,13 @@ const CurrencyConverter = () => {
     }
     setIsConverting(true);
     setError('');
-    
+
     try {
       const response = await fetch(`https://api.exchangerate-api.com/v4/latest/${fromCurrency}`);
       const data = await response.json();
       const rate = data.rates[toCurrency];
       const convertedValue = (amount * rate).toFixed(2);
       setConvertedAmount(convertedValue);
-
-      // Example use of Groq API
-      await fetchGroqResponse("Currency Conversion", `${amount} ${fromCurrency} to ${toCurrency}`);
     } catch (err) {
       setError('Error fetching conversion rates. Please try again later.');
     }
@@ -51,6 +50,10 @@ const CurrencyConverter = () => {
   const handleCopy = () => {
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const handleGroqSubmit = () => {
+    fetchGroqResponse("Explain this currency conversion: ", query);
   };
 
   return (
@@ -79,9 +82,7 @@ const CurrencyConverter = () => {
         </motion.div>
 
         <motion.div className="mb-8">
-          <label htmlFor="amount" className="block text-lg font-medium text-gray-700 mb-2">
-            Amount:
-          </label>
+          <label htmlFor="amount" className="block text-lg font-medium text-gray-700 mb-2">Amount:</label>
           <div className="flex space-x-4">
             <input
               type="number"
@@ -108,39 +109,35 @@ const CurrencyConverter = () => {
 
         <motion.div className="flex space-x-4 mb-8">
           <div className="w-full">
-            <label htmlFor="fromCurrency" className="block text-lg font-medium text-gray-700 mb-2">
-              From Currency:
-            </label>
+            <label htmlFor="fromCurrency" className="block text-lg font-medium text-gray-700 mb-2">From Currency:</label>
             <select
               id="fromCurrency"
               value={fromCurrency}
               onChange={(e) => setFromCurrency(e.target.value)}
               className="w-full px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="USD">USD (United States Dollar)</option>
-              <option value="EUR">EUR (Euro)</option>
-              <option value="GBP">GBP (British Pound)</option>
-              <option value="INR">INR (Indian Rupee)</option>
-              <option value="JPY">JPY (Japanese Yen)</option>
-              <option value="AUD">AUD (Australian Dollar)</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="INR">INR</option>
+              <option value="JPY">JPY</option>
+              <option value="AUD">AUD</option>
             </select>
           </div>
           <div className="w-full">
-            <label htmlFor="toCurrency" className="block text-lg font-medium text-gray-700 mb-2">
-              To Currency:
-            </label>
+            <label htmlFor="toCurrency" className="block text-lg font-medium text-gray-700 mb-2">To Currency:</label>
             <select
               id="toCurrency"
               value={toCurrency}
               onChange={(e) => setToCurrency(e.target.value)}
               className="w-full px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
-              <option value="USD">USD (United States Dollar)</option>
-              <option value="EUR">EUR (Euro)</option>
-              <option value="GBP">GBP (British Pound)</option>
-              <option value="INR">INR (Indian Rupee)</option>
-              <option value="JPY">JPY (Japanese Yen)</option>
-              <option value="AUD">AUD (Australian Dollar)</option>
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="INR">INR</option>
+              <option value="JPY">JPY</option>
+              <option value="AUD">AUD</option>
             </select>
           </div>
         </motion.div>
@@ -179,7 +176,7 @@ const CurrencyConverter = () => {
           )}
         </AnimatePresence>
 
-        <motion.div className="bg-gray-50 p-6 rounded-lg border text-black border-gray-100">
+        <motion.div className="bg-gray-50 p-6 rounded-lg border text-black border-gray-100 mb-8">
           <h2 className="text-xl font-semibold mb-3">Sample Conversions</h2>
           <ul className="list-disc pl-5 space-y-2">
             <li>100 USD to EUR</li>
@@ -188,10 +185,36 @@ const CurrencyConverter = () => {
           </ul>
         </motion.div>
 
-        {/* Groq Response */}
-        {loading && <p className="text-center mt-4 text-lg">Fetching information...</p>}
-        {groqError && <p className="text-center mt-4 text-red-600">{groqError}</p>}
-        {response && !loading && <p className="text-center mt-4 text-lg">{response}</p>}
+        {/* Groq AI Feature */}
+        <motion.div className="bg-white border p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4 text-black">Ask CurrencyAI</h2>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="e.g. Why is USD stronger than EUR?"
+              className="flex-1 px-4 py-3 border text-gray-800 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <motion.button
+              onClick={handleGroqSubmit}
+              disabled={aiLoading}
+              className="px-6 py-3 rounded-lg font-medium text-white"
+              style={{ backgroundColor: colors.primary }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {aiLoading ? "Thinking..." : "Ask AI"}
+            </motion.button>
+          </div>
+          {aiError && <p className="mt-2 text-sm text-red-600">{aiError}</p>}
+          {response && (
+            <div className="mt-4 border p-4 rounded-lg text-black bg-gray-50">
+              <h3 className="font-semibold mb-2">AI Response:</h3>
+              <p>{response}</p>
+            </div>
+          )}
+        </motion.div>
       </div>
     </motion.div>
   );

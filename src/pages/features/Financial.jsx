@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useGroq } from '../../hooks/useGroq'; // Import useGroq hook
+import { useGroq } from '../../hooks/useGroq';  // Import your custom hook
 
 const topic = {
   name: "EurekaAi",
@@ -16,11 +16,13 @@ const colors = {
 
 const FinanceAi = () => {
   const [question, setQuestion] = useState('');
+  const [answer, setAnswer] = useState('');
+  const [isAnswering, setIsAnswering] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState('');
 
-  // Use the useGroq hook
-  const { fetchGroqResponse, response, loading, error: groqError } = useGroq();
+  // Use your custom hook
+  const { fetchGroqResponse, response, loading, error: hookError } = useGroq();
 
   const handleAsk = () => {
     if (!question.trim()) {
@@ -28,14 +30,30 @@ const FinanceAi = () => {
       return;
     }
 
+    setIsAnswering(true);
     setError('');
-    fetchGroqResponse('finance', question); // Use fetchGroqResponse to get the response
+    setTimeout(() => {
+      fetchGroqResponse('finance', question);  // Fetch AI response
+    }, 1500);
   };
 
   const handleCopy = () => {
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   };
+
+  React.useEffect(() => {
+    if (response) {
+      const fakeAnswer = `**Q:** ${question}\n\n**A (by ${topic.name} AI):**\n${response}\n\n*Disclaimer: This is AI-generated information. For financial advice tailored to your situation, consult a certified financial advisor.*`;
+      setAnswer(fakeAnswer);
+      setIsAnswering(false);
+    }
+
+    if (hookError) {
+      setError(hookError);  // If there's an error in the custom hook
+      setIsAnswering(false);
+    }
+  }, [response, hookError, question]);
 
   return (
     <motion.div
@@ -77,20 +95,20 @@ const FinanceAi = () => {
             />
             <motion.button
               onClick={handleAsk}
-              disabled={loading}
+              disabled={isAnswering || loading}
               className="px-6 py-3 rounded-lg font-medium text-white"
               style={{ backgroundColor: colors.primary }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {loading ? "Thinking..." : "Ask AI"}
+              {isAnswering || loading ? "Thinking..." : "Ask AI"}
             </motion.button>
           </div>
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
         </motion.div>
 
         <AnimatePresence>
-          {(response || loading) && (
+          {(answer || isAnswering || loading) && (
             <motion.div
               className="mb-8"
               initial={{ opacity: 0, y: 20 }}
@@ -100,8 +118,8 @@ const FinanceAi = () => {
             >
               <div className="flex justify-between items-center mb-3">
                 <h2 className="text-xl font-semibold">AI Response</h2>
-                {response && (
-                  <CopyToClipboard text={response} onCopy={handleCopy}>
+                {answer && (
+                  <CopyToClipboard text={answer} onCopy={handleCopy}>
                     <motion.button
                       className="px-4 py-2 text-sm rounded-md flex items-center"
                       style={{
@@ -117,13 +135,13 @@ const FinanceAi = () => {
                 )}
               </div>
               <div className="border border-gray-200 rounded-lg p-6 bg-white text-black shadow-sm">
-                {loading && !response ? (
+                {loading && !answer ? (
                   <div className="flex justify-center h-40 items-center text-gray-700">
                     Generating answer...
                   </div>
                 ) : (
                   <div className="prose max-w-none">
-                    {response.split('\n').map((line, idx) => (
+                    {answer.split('\n').map((line, idx) => (
                       <p key={idx}>{line}</p>
                     ))}
                   </div>

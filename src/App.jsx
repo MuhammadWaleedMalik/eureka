@@ -20,25 +20,44 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 
 
+
 import Docs from './pages/Docs';
-import AICalculator from './pages/features/Arithmetic';
-import BasicCalculation from './pages/features/Basic';
-import PercentageCalculator from './pages/features/Fractionals';
-import NumberTheoryQA from './pages/features/Numbers';
-import DecimalCalculation from './pages/features/Decimals';
-import PrimeFactorization from './pages/features/PrimeFactor';
+import StepByStepCalculator from './pages/features/Step';
+import ElementaryMathTool from './pages/features/Elementarymath';
+import Algebra from './pages/features/Algebra';
+import GraphPlotter from './pages/features/Plots';
+import CalculusSolver from './pages/features/Calculus';
+import Geometry from './pages/features/Geometry';
+import DifferentialEquationSolver from './pages/features/Differential';
+import Statistics from './pages/features/Static';
 import PhysicsAssistant from './pages/features/Physics';
-import ElectricityCircuits from './pages/features/Electricity';
-import BiologyAi from './pages/features/Biology';
 import ChemistryAssistant from './pages/features/Chemistry';
+import UnitConverter from './pages/features/Units';
+import EngineeringAssistant from './pages/features/Engineering';
+import ComputationalScienceAssistant from './pages/features/ComputationalS';
+import EarthScienceAssistant from './pages/features/EarthSciences';
+import MaterialScienceAssistant from './pages/features/MaterialSciences';
+import TransportationAssistant from './pages/features/Transportation';
 import HistoryAi from './pages/features/Historical';
-import TimeDateAi from './pages/features/Time';
-import CulturalEventAi from './pages/features/Cultural';
-import DemographicEventAi from './pages/features/Demographics';
-import HealthAi from './pages/features/Health';
 import NutritionAi from './pages/features/Nutrition';
+import DemographicEventAi from './pages/features/Demographics';
+import MoneyFinanceAi from './pages/features/Money';
+import DateTimeAi from './pages/features/Dates';
+import WordsLinguisticsAi from './pages/features/Words';
+import ArtsMediaAi from './pages/features/Arts';
+import HealthAi from './pages/features/Health';
 import FinanceAi from './pages/features/Financial';
-import CurrencyConverter from './pages/features/CurrencyConversion';
+import SurpriseAi from './pages/features/Surprices';
+import EntertainmentAi from './pages/features/Entertainment';
+import HouseholdAi from './pages/features/HouseScience';
+import HouseholdMath from './pages/features/HouseHoldMath';
+import HobbiesAi from './pages/features/Hobbies';
+import WorldNewsAi from './pages/features/WorldNewsAi';
+
+
+
+
+
 import DashboardC from './pages/DashboardC';
 
 
@@ -76,27 +95,50 @@ function App() {
         <Route element={<ProtectedRoute />}>
 
  <Route path="pricing/basic" element={<PricingBasic />} />
-                    <Route path="pricing/enterprise" element={<PricingEnterprice />} />
-                    <Route path="pricing/pro" element={<PricingPro />} />
+                    <Route path="pricing/standard" element={<PricingEnterprice />} />
+                    <Route path="pricing/premium" element={<PricingPro />} />
+<Route path="/math/step-by-step" element={<StepByStepCalculator />} />
+      <Route path="/math/elementary" element={<ElementaryMathTool />} />
+      <Route path="/math/algebra" element={<Algebra/>} />
+      <Route path="/math/plotting" element={<GraphPlotter />} />
+      <Route path="/math/calculus" element={<CalculusSolver />} />
+      <Route path="/math/geometry" element={<Geometry/>} />
+      <Route path="/math/differential-equations" element={<DifferentialEquationSolver />} />
+      <Route path="/math/statistics" element={<Statistics />} />
 
-      <Route path="math/arithmetic" element={<AICalculator/>} />
-      <Route path="math/basic-ops" element={<BasicCalculation />} />
-      <Route path="math/percentages" element={<PercentageCalculator />} />
-      <Route path="math/fractions" element={<DecimalCalculation />} />
-      <Route path="math/number-theory" element={<NumberTheoryQA />} />
-      <Route path="math/prime-factors" element={<PrimeFactorization />} />
-      <Route path="science/physics" element={<PhysicsAssistant />} />
-      <Route path="science/electricity" element={<ElectricityCircuits />} />
-      <Route path="science/biology" element={<BiologyAi />} />
-      <Route path="science/chemistry" element={<ChemistryAssistant />} />
-      <Route path="society/history" element={<HistoryAi />} />
-      <Route path="society/time" element={<TimeDateAi />} />
-      <Route path="society/events" element={<CulturalEventAi />} />
-      <Route path="society/demographics" element={<DemographicEventAi />} />
-      <Route path="daily/health" element={<HealthAi />} />
-      <Route path="daily/nutrition" element={<NutritionAi />} />
-      <Route path="daily/finance" element={<FinanceAi />} />
-      <Route path="daily/currency" element={<CurrencyConverter />} />
+
+      <Route path="/science/units" element={<UnitConverter/>} />
+      <Route path="/science/physics" element={<PhysicsAssistant />} />
+      <Route path="/science/chemistry" element={<ChemistryAssistant />} />
+      <Route path="/science/engineering" element={<EngineeringAssistant />} />
+      <Route path="/science/computational" element={<ComputationalScienceAssistant />} />
+      <Route path="/science/earth" element={<EarthScienceAssistant />} />
+      <Route path="/science/materials" element={<MaterialScienceAssistant />} />
+      <Route path="/science/transportation" element={<TransportationAssistant />} />
+
+
+
+      <Route path="/society/history" element={<HistoryAi />} />
+      <Route path="/society/food" element={<NutritionAi />} />
+      <Route path="/society/geography" element={<DemographicEventAi />} />
+      <Route path="/society/money" element={<MoneyFinanceAi />} />
+      <Route path="/society/dates" element={<DateTimeAi />} />
+      <Route path="/society/linguistics" element={<WordsLinguisticsAi />} />
+      <Route path="/society/arts" element={<ArtsMediaAi />} />
+
+
+      <Route  path="/daily/health" element={<HealthAi />} />
+      <Route path="/daily/personal-finance" element={<FinanceAi />} />
+      <Route path="/daily/surprises" element={<SurpriseAi />} />
+      <Route path="/daily/entertainment" element={<EntertainmentAi />} />
+      <Route path="/daily/household-science" element={<HouseholdAi />} />
+      <Route path="/daily/household-math" element={<HouseholdMath/>} />
+      <Route path="/daily/hobbies" element={<HobbiesAi />} />
+      <Route path="/daily/world" element={<WorldNewsAi />} />
+
+
+
+        
       
           
 
