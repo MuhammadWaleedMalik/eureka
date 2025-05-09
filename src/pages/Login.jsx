@@ -111,7 +111,7 @@ const Login = () => {
           className="text-center mb-10"
         >
           <h1 className="text-3xl font-bold mb-2" style={{ color: colors.primary }}>
-            Welcome to Davinci Sky
+            Welcome to Eureka AI
           </h1>
           <p className="text-gray-600">Sign in to access AI-powered visual tools</p>
         </motion.div>
